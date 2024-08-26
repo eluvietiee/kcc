@@ -1,0 +1,42 @@
+---
+version: "2.0"
+services:
+  kcc:
+    image: kucoincommunitychain/kcc:v1.4.4-stable
+    expose:
+      - port: 30303
+        as: 30303
+        to:
+          - global: true
+      - port: 8545
+        as: 8545
+        to:
+          - global: true
+    args:
+      - --datadir=/data/.kcc
+      - --http
+      - --ws
+      - --http.addr=0.0.0.0
+      - --ws.addr=0.0.0.0
+      - --http.vhosts=*
+profiles:
+  compute:
+    kcc:
+      resources:
+        cpu:
+          units: 4
+        memory:
+          size: 8GB
+        storage:
+          - size: 200Gi
+  placement:
+    dcloud:
+      pricing:
+        kcc:
+          denom: uakt
+          amount: 10000
+deployment:
+  kcc:
+    dcloud:
+      profile: kcc
+      count: 1
